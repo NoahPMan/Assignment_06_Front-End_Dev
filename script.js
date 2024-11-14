@@ -2,9 +2,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("trivia-form");
     const questionContainer = document.getElementById("question-container");
     const newPlayerButton = document.getElementById("new-player");
+    const scoreDisplay = document.getElementById("score-display");
+    const scoreElement = document.getElementById("score");
 
     // Initialize the game
-    checkUsername(); // Uncomment once completed
     fetchQuestions();
     displayScores();
 
@@ -54,8 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     question.correct_answer,
                     question.incorrect_answers,
                     index
-                )}
-            `;
+                )}`;
             questionContainer.appendChild(questionDiv);
         });
     }
@@ -107,75 +107,22 @@ document.addEventListener("DOMContentLoaded", function () {
         const username = getCookie("username");
         saveScore(username, score);
 
+        // Show the score in the UI
+        displayScore(score);
+
         // Refresh the game with new questions
         fetchQuestions();
     }
 
     /**
-     * Checks if a username cookie exists and adjusts the UI accordingly.
-     */
-    function checkUsername() {
-        const username = getCookie("username");
-        if (username) {
-            // If username exists, hide the form and show the new player button
-            document.getElementById("username-container").classList.add("hidden");
-            document.getElementById("new-player").classList.remove("hidden");
-        }
-    }
-
-    /**
-     * Sets a cookie with the given name, value, and expiration days.
-     * @param {string} name - The name of the cookie.
-     * @param {string} value - The value of the cookie.
-     * @param {number} days - The number of days until the cookie expires.
-     */
-    function setCookie(name, value, days) {
-        const expires = new Date();
-        expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-        document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
-    }
-
-    /**
-     * Retrieves the value of a cookie by its name.
-     * @param {string} name - The name of the cookie.
-     * @returns {string|null} - The value of the cookie, or null if not found.
-     */
-    function getCookie(name) {
-        const nameEQ = `${name}=`;
-        const ca = document.cookie.split(';');
-        for (let i = 0; i < ca.length; i++) {
-            let c = ca[i];
-            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-        }
-        return null;
-    }
-
-    /**
-     * Saves the score to localStorage for the current user.
-     * @param {string} username - The username of the player.
-     * @param {number} score - The score to save.
-     */
-    function saveScore(username, score) {
-        localStorage.setItem(username, score);
-    }
-
-    /**
-     * Calculates the score based on the user's selected answers.
-     * @returns {number} The total score based on correct answers.
+     * Calculates the score based on selected answers.
+     * @returns {number} The user's score.
      */
     function calculateScore() {
-        let score = 0;
-        
-        // Get all the radio buttons for the questions
         const answers = document.querySelectorAll('input[type="radio"]:checked');
-        
-        // Iterate over each selected answer
+        let score = 0;
+
         answers.forEach((answer) => {
-            // Get the name of the question (i.e., the question index)
-            const questionIndex = answer.name.replace('answer', '');
-            
-            // Check if the selected answer is correct
             if (answer.dataset.correct === "true") {
                 score++;
             }
@@ -185,30 +132,50 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     /**
-     * Initializes a new player session by clearing cookies and updating the UI.
+     * Displays the score to the user.
+     * @param {number} score - The user's score.
      */
-    function newPlayer() {
-        // Clear the username cookie
-        document.cookie = "username=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
-        
-        // Reset the UI for a new player
-        document.getElementById("username-container").classList.remove("hidden");
-        document.getElementById("new-player").classList.add("hidden");
+    function displayScore(score) {
+        // Display the score in the UI
+        scoreElement.innerText = score;
+
+        // Make the score display visible
+        scoreDisplay.classList.remove("hidden");
+
+        // Optionally, hide the score after a few seconds
+        setTimeout(() => {
+            scoreDisplay.classList.add("hidden");
+        }, 3000); // Hide after 3 seconds (adjust the time as needed)
     }
 
-    /**
-     * Displays the scores of users from localStorage.
-     */
-    function displayScores() {
-        const scoresContainer = document.getElementById("scores-container");
-        scoresContainer.innerHTML = ""; // Clear previous scores
+    // Cookie and score management functions
+    function setCookie(name, value, days) {
+        const expires = new Date();
+        expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+        document.cookie = `${name}=${value}; expires=${expires.toUTCString()}; path=/`;
+    }
 
-        for (let i = 0; i < localStorage.length; i++) {
-            const username = localStorage.key(i);
-            const score = localStorage.getItem(username);
-            const scoreElement = document.createElement("div");
-            scoreElement.innerText = `${username}: ${score}`;
-            scoresContainer.appendChild(scoreElement);
+    function getCookie(name) {
+        const nameEQ = `${name}=`;
+        const ca = document.cookie.split(";");
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == " ") c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
         }
+        return null;
+    }
+
+    function saveScore(username, score) {
+        localStorage.setItem(username, score);
+    }
+
+    function newPlayer() {
+        setCookie("username", "", -1); // Delete the username cookie
+        fetchQuestions();
+    }
+
+    function displayScores() {
+        // Code to display saved scores (if needed)
     }
 });
