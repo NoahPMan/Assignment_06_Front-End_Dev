@@ -19,3 +19,4 @@ Handling asynchronous API calls was another challenge. Since the trivia question
 ## 4. What Would You Do Differently Now?
 
 If I had the chance to do it again, I’d focus on improving the CSS. I would refine the design to make the game more visually appealing, adding cleaner layouts, animations, and transitions. It would help make the interface more engaging and fun for users, improving the overall experience.
+
