@@ -102,6 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
             setCookie("username", username, 7); // Store the username in a cookie for 7 days
         }
 
+        checkUsername(); // Recheck username session status after form submission
         // Logic to process the form and calculate the score (add later)
         // saveScore(username, score);
     }
@@ -144,10 +145,14 @@ document.addEventListener("DOMContentLoaded", function () {
     function checkUsername() {
         const username = getCookie("username");
         if (username) {
+            // Display a welcome message and adjust the UI for a logged-in user
             document.getElementById("username-display").innerText = `Welcome back, ${username}!`;
-            // Additional UI logic for a logged-in user
+            document.getElementById("username").style.display = "none"; // Hide the username input field
+            newPlayerButton.style.display = "inline-block"; // Show the New Player button
         } else {
             document.getElementById("username-display").innerText = "Please enter your username.";
+            document.getElementById("username").style.display = "inline-block"; // Show the username input field
+            newPlayerButton.style.display = "none"; // Hide the New Player button
         }
     }
 
@@ -159,7 +164,9 @@ document.addEventListener("DOMContentLoaded", function () {
         document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
 
         // Reset UI (e.g., clear username input, scores, etc.)
-        document.getElementById("username").value = ""; // Clear the username input
+        document.getElementById("username").style.display = "inline-block"; // Show username input
+        document.getElementById("username-display").innerText = "Please enter your username."; // Reset message
+        newPlayerButton.style.display = "none"; // Hide the New Player button
         displayScores(); // Reset or display the scores (implement logic as needed)
     }
 
