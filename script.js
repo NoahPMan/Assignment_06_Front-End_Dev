@@ -141,11 +141,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Make the score display visible
         scoreDisplay.classList.remove("hidden");
-
-        // Optionally, hide the score after a few seconds
-        setTimeout(() => {
-            scoreDisplay.classList.add("hidden");
-        }, 3000); // Hide after 3 seconds (adjust the time as needed)
     }
 
     // Cookie and score management functions
@@ -176,6 +171,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function displayScores() {
-        // Code to display saved scores (if needed)
+        // Code to display saved scores
     }
 });
